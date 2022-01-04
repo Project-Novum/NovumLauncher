@@ -14,17 +14,24 @@ public static class Constants
     public const int BootRsaFunctionOffsetInstallVersion = 0x5DF50;
     public const int BootRsaPatternOffsetInstallVersion = 0x5e32C ;
     public const int BootLobbyOffsetInstallVersion = 0x8E5C6C;
-    public const int BootHostNameOffsetInstallVersion = 0x8E62DC ;
+    public const int BootHostNamePortOffsetInstallVersion = 0x8E62D4;
+    public const int BootHostNameOffsetInstallVersion = 0x8E62DC;
+    public const int BootOriginOffsetInstallVersion = 0x90A4A0;
         
+    
+    
     public const int BootRsaFunctionOffsetUpdatedVersion = 0x64310;
     public const int BootRsaPatternOffsetUpdatedVersion = 0x646EC;
     public const int BootLobbyOffsetUpdatedVersion = 0x965d08;
+    public const int BootHostNamePortOffsetUpdatedVersion = 0x9663FC;
     public const int BootHostNameOffsetUpdatedVersion = 0x966404;
+    public const int BootOriginOffsetUpdatedVersion = 0x99212C;
+    
     
         
     public static readonly byte[] TimePatch = { 0xB8, 0x12, 0xE8, 0xE0, 0x50 };
     public static readonly byte[] OriginalRsaSign = { 0x8B,0x44,0x24,0x24,0x83,0xC4,0x0C};
-    public static readonly byte[] RsaFunctionPatch = { 0xB8, 0x1F, 0x00, 0x00, 0x00, 0x0D};
+    public static readonly byte[] RsaFunctionPatch = { 0xB8, 0x1F, 0x00, 0x00, 0x00, 0xC3};
     public static readonly byte[] RsaPatternPatch = { 0x5E, 0x87, 0x48, 0x48, 0x06, 0xF8, 0x88 };
 
     public static readonly byte[] BootLobbyPatch =
