@@ -8,7 +8,7 @@
         <Nullable>enable</Nullable>
         <RuntimeIdentifier>win-x86</RuntimeIdentifier>
         <Configurations>Debug;Release</Configurations>
-        <Platforms>x86;x64</Platforms>
+        <Platforms>x86</Platforms>
         <PlatformTarget>x86</PlatformTarget>
     </PropertyGroup>
 
