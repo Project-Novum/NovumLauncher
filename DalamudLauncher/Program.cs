@@ -19,12 +19,13 @@ namespace DalamudLauncher
                     if (Uri.CheckHostName(hostName) == UriHostNameType.Unknown)
                     {
                         Console.WriteLine("Invalid Host Name");
+                        continue;
                     }
                 }
                 else
                 {
                     Console.WriteLine("The Host Name Value is Empty");
-
+                    continue;
                 }
                 
                 Console.WriteLine("Please Enter the Port for the hostname");
@@ -32,16 +33,18 @@ namespace DalamudLauncher
                 
                 if (port != null)
                 {
-                    int valid = Int32.Parse(port);
+                    int valid = int.Parse(port);
 
                     if (valid <= 0)
                     {
                         Console.WriteLine("Invalid Port Number");
+                        continue;
                     }
                 }
                 else
                 {
                     Console.WriteLine("The Port Number Value is Empty");
+                    continue;
                 }
 
                 break;

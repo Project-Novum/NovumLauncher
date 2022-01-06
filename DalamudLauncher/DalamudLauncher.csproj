@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-      <Exec Command="xcopy $(SolutionDir)$(ConfigurationName)\ApiHooks.dll  $(ProjectDir)$(OutDir)  /Y /I" />
+      <Exec Command="xcopy $(ProjectDir)..\$(ConfigurationName)\ApiHooks.dll  $(ProjectDir)$(OutDir)  /Y /I" />
     </Target>
 
 </Project>

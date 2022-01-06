@@ -7,10 +7,13 @@ public static class Constants
         "Microsoft\\Windows\\CurrentVersion\\Uninstall\\{F2C4E6E0-EB78-4824-A212-6DF6AF0E8E82}";
 
     public const string RegexPattern = "<script>window.location=\"(.*)\";</script>";
+    
 
     public const int GameTimePatchOffset = 0x9A15E3;
     public const int GameLobbyHostNameOffset = 0xB90110;
-
+    
+    public const string BootSHA1InstallVersion = "999EFB09D7D94C9C8106A75688CF3BED7C1FBA84";
+    
     public const int BootRsaFunctionOffsetInstallVersion = 0x5DF50;
     public const int BootRsaPatternOffsetInstallVersion = 0x5e32C ;
     public const int BootLobbyOffsetInstallVersion = 0x8E5C6C;
@@ -22,7 +25,7 @@ public static class Constants
     
     public const int BootRsaFunctionOffsetUpdatedVersion = 0x64310;
     public const int BootRsaPatternOffsetUpdatedVersion = 0x646EC;
-    public const int BootLobbyOffsetUpdatedVersion = 0x965d08;
+    public const int BootLobbyOffsetUpdatedVersion = 0x965D08;
     public const int BootHostNamePortOffsetUpdatedVersion = 0x9663FC;
     public const int BootHostNameOffsetUpdatedVersion = 0x966404;
     public const int BootOriginOffsetUpdatedVersion = 0x99212C;

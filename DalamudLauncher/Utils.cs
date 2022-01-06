@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using Common.StructLayout;
 using Common.Wrappers;
@@ -31,7 +32,7 @@ public sealed class Utils
     }
 
 
-    public string? GameInstallLocation()
+    public string GameInstallLocation()
     {
         string fullRegLocationPath = "";
 
@@ -47,6 +48,11 @@ public sealed class Utils
         string? installLocation = Registry.GetValue(fullRegLocationPath, "InstallLocation", null) as string;
         string? displayName = Registry.GetValue(fullRegLocationPath, "DisplayName", null) as string;
 
+        if (installLocation == null || displayName == null)
+        {
+            throw new Exception("Error while finding the game installation location from Registry");
+        }
+
         return $"{installLocation}\\{displayName}";
     }
 
@@ -60,6 +66,15 @@ public sealed class Utils
 
         MemoryAccessWrapper.VirtualProtectEx(hProcess, address, new UIntPtr((uint)patchSize), lpflOldProtect,
             out lpflOldProtect);
+    }
+
+    public byte[] WriteToMemoryStream(int offset,byte[] patchBytes, int patchSize,byte[] data)
+    {
+        using (MemoryStream ms = new MemoryStream(data))
+        {
+            ms.Write(patchBytes,offset,patchSize);
+            return data;
+        }
     }
 
 
@@ -111,8 +126,25 @@ public sealed class Utils
         return ipAddresses.First(a => a.AddressFamily == AddressFamily.InterNetwork).ToString();
     }
 
+    public string GetSha1Hash(string filePath)
+    {
+        string result = "";
 
-    
+        using (SHA1 sha1 = SHA1.Create())
+        {
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                byte[] sha1Bytes = sha1.ComputeHash(fileStream);
+                
+                foreach (byte b in sha1Bytes) result += b.ToString("x2");
+            }
+        }
+
+        return result;
+    }
+
+
+
     public string FFXIVLoginStringDecode(byte[] data)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;

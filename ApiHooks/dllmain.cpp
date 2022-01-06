@@ -1,4 +1,5 @@
 #include "dllmain.h"
+#include <atlbase.h>
 #include <detours.h>
 
 
@@ -23,8 +24,11 @@ BOOL WINAPI create_process_a_hook(LPCSTR lpApplicationName,
     STARTUPINFOA lpStartupInfo,
     PROCESS_INFORMATION lpProcessInformation)
 {
-
+    
     MessageBox(NULL,L"CREATEPROCESSCALLED",L"CREATEPROCESSCALLED",MB_OK);
+    
+    MessageBox(NULL,reinterpret_cast<LPCTSTR>(lpApplicationName) ,L"APPLICATION NAME",MB_OK);
+    MessageBox(NULL,reinterpret_cast<LPCTSTR>(lpCommandLine),L"Command Line",MB_OK);
     
     return native_create_process_a(lpApplicationName,
         lpCommandLine,
@@ -52,7 +56,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         DetourUpdateThread(GetCurrentThread());
         DetourAttach(&(PVOID&)native_set_process_affinity_mask, set_process_affinity_mask_hook);
         DetourAttach(&(PVOID&)native_set_thread_affinity_mask, set_thread_affinity_mask_hook);
-        //DetourAttach(&(PVOID&)native_create_process_a, create_process_a_hook);
+       // DetourAttach(&(PVOID&)native_create_process_a, create_process_a_hook);
         DetourTransactionCommit();
         break;
     case DLL_THREAD_ATTACH:
