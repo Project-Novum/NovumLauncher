@@ -12,7 +12,7 @@ public static class Constants
     public const int GameTimePatchOffset = 0x9A15E3;
     public const int GameLobbyHostNameOffset = 0xB90110;
     
-    public const string BootSHA1InstallVersion = "999EFB09D7D94C9C8106A75688CF3BED7C1FBA84";
+    public const string BootSha1InstallVersion = "999EFB09D7D94C9C8106A75688CF3BED7C1FBA84";
     
     public const int BootRsaFunctionOffsetInstallVersion = 0x5DF50;
     public const int BootRsaPatternOffsetInstallVersion = 0x5e32C ;

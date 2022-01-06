@@ -50,7 +50,7 @@ public class BootPatching
         }
     }
 
-    private bool ApplyPatchesToBinary(string bootPath,string workingDirectory,string patchServerAddress,
+    private  bool ApplyPatchesToBinary(string bootPath,string workingDirectory,string patchServerAddress,
         string patchServerPort)
     {
         
@@ -93,6 +93,9 @@ public class BootPatching
        
         
         File.WriteAllBytes(bootPath,bootData);
+
+        string latestBootVersion = GetLatestBootVersionString(workingDirectory, patchServerAddress, patchServerPort);
+        File.WriteAllText($"{workingDirectory}\\boot.ver",latestBootVersion);
         
         
         CreateProcessWrapper createProcessWrapper = new(bootPath);
@@ -176,7 +179,14 @@ public class BootPatching
         {
             return true;
         }
-
+        
+        // check if it's not the patched binary one 
+        if (buffer.Length == Constants.RsaPatternPatch.Length &&
+            NativeMethods.memcmp(buffer, Constants.OriginalRsaSign, buffer.Length) == 0)
+        {
+            return true;
+        }
+        
         return false;
     }
 
@@ -185,7 +195,7 @@ public class BootPatching
         string sha1Value = _utils.GetSha1Hash(bootPath);
         
 
-        if (string.Equals(sha1Value, Constants.BootSHA1InstallVersion, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(sha1Value, Constants.BootSha1InstallVersion, StringComparison.OrdinalIgnoreCase))
         {
             return PatchingMethod.BinaryPatching;
         }
@@ -204,7 +214,7 @@ public class BootPatching
                 }
                 
                 sha1Value = _utils.GetSha1Hash($"{workingDirectory}\\backup\\ffxivboot.exe");
-                if (string.Equals(sha1Value, Constants.BootSHA1InstallVersion, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(sha1Value, Constants.BootSha1InstallVersion, StringComparison.OrdinalIgnoreCase))
                 {
                     File.Copy($"{workingDirectory}\\backup\\ffxivboot.exe",$"{workingDirectory}\\ffxivboot.exe",true);
                     return PatchingMethod.BinaryPatching;
@@ -220,5 +230,29 @@ public class BootPatching
         return PatchingMethod.MemoryPatching;
 
 
+    }
+
+    private string GetLatestBootVersionString(string workingDirectory, string hostAddress, string hostPort)
+    {
+        
+        string bootVer = File.ReadAllText($"{workingDirectory}\\boot.ver");
+        string url = $"http://{hostAddress}:{hostPort}/patch/vercheck/ffxiv/win32/release/boot/{bootVer.Trim()}";
+        
+        try
+        {
+            using HttpClient client = new();
+            HttpResponseMessage httpResponseMessage = client.GetAsync(url).Result;
+        
+            httpResponseMessage.Headers.TryGetValues("X-Latest-Version", out IEnumerable<string>? latesetVersion);
+
+            if (latesetVersion != null) return latesetVersion.First();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
+        return "2010.09.18.0000";
     }
 }
