@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovumLauncher", "NovumLauncher\NovumLauncher.csproj", "{6073EB93-3A24-476A-B7F5-87ACF169E9B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980} = {78AF24A6-99CE-4CEB-B198-7EC0530FC980}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{9DB68E0F-D927-4999-B2A1-8664CC8FFAAC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApiHooks", "ApiHooks\ApiHooks.vcxproj", "{78AF24A6-99CE-4CEB-B198-7EC0530FC980}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovumLauncherUI", "NovumLauncherUI\NovumLauncherUI.csproj", "{BA4F399F-7408-47BE-B69F-FA1D9955E26F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9} = {6073EB93-3A24-476A-B7F5-87ACF169E9B9}
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980} = {78AF24A6-99CE-4CEB-B198-7EC0530FC980}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9}.Debug|x86.ActiveCfg = Debug|x86
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9}.Debug|x86.Build.0 = Debug|x86
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9}.Release|x86.ActiveCfg = Release|x86
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9}.Release|x86.Build.0 = Release|x86
+		{9DB68E0F-D927-4999-B2A1-8664CC8FFAAC}.Debug|x86.ActiveCfg = Debug|x86
+		{9DB68E0F-D927-4999-B2A1-8664CC8FFAAC}.Debug|x86.Build.0 = Debug|x86
+		{9DB68E0F-D927-4999-B2A1-8664CC8FFAAC}.Release|x86.ActiveCfg = Release|x86
+		{9DB68E0F-D927-4999-B2A1-8664CC8FFAAC}.Release|x86.Build.0 = Release|x86
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Debug|x86.ActiveCfg = Debug|Win32
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Debug|x86.Build.0 = Debug|Win32
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Release|x86.ActiveCfg = Release|Win32
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Release|x86.Build.0 = Release|Win32
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.ActiveCfg = Debug|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.Build.0 = Debug|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.ActiveCfg = Release|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9FA3E4AF-D85B-4D2A-96DF-382C7BA71EA8}
+	EndGlobalSection
+EndGlobal
