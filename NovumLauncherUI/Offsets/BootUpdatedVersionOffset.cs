@@ -1,34 +1,34 @@
-﻿namespace DalamudLauncher.offsets;
+﻿namespace NovumLauncherUI.Offsets;
 
-public class BootInstalledVersionOffset : IBootOffSet
+public class BootUpdatedVersionOffset : IBootOffSet
 {
     public int GetRsaFunctionOffSet()
     {
-        return 0x5DF50;
+        return 0x64310;
     }
 
     public int GetRsaPatternOffset()
     {
-        return 0x5e32C;
+        return 0x646EC;
     }
 
     public int GetLobbyOffset()
     {
-        return 0x8E5C6C;
+        return 0x965D08;
     }
 
     public int GetHostNamePortOffset()
     {
-        return 0x8E62D4;
+        return 0x9663FC;
     }
 
     public int GetHostNameOffset()
     {
-        return 0x8E62DC;
+        return 0x966404;
     }
 
     public int GetSecureSquareEnixOffset()
     {
-        return 0x90A4A0;
+        return 0x99212C;
     }
 }

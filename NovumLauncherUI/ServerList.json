@@ -1,0 +1,11 @@
+{
+  "ServerList":[
+    {
+      "ServerName":"local",
+      "PatchServerAddress":"localhost",
+      "PatchServerPort":"54996",
+      "LoginServerAddress":"http://localhost:8081",
+      "LobbyServerAddress":"localhost"
+    }
+  ]
+}

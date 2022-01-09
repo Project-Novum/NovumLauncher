@@ -1,4 +1,4 @@
-﻿namespace DalamudLauncher.Enums;
+﻿namespace NovumLauncher.Enums;
 
 public enum PatchingMethod
 {

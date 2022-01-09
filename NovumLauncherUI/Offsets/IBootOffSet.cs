@@ -1,4 +1,4 @@
-﻿namespace DalamudLauncher.offsets;
+﻿namespace NovumLauncherUI.Offsets;
 
 public interface IBootOffSet
 {
