@@ -4,8 +4,10 @@
 // Windows Header Files
 #include <windows.h>
 #include <iostream>
+#include <shellapi.h>
 
 #pragma comment(lib, "KERNEL32.lib")
+#pragma comment(lib, "Shell32.lib")
 
 
 static BOOL (WINAPI* native_set_process_affinity_mask)(HANDLE hProcess, DWORD_PTR dwProcessAffinityMask) =
@@ -24,6 +26,9 @@ _In_opt_ LPVOID lpEnvironment,
 _In_opt_ LPCSTR lpCurrentDirectory,
 _In_ LPSTARTUPINFOA lpStartupInfo,
 _Out_ LPPROCESS_INFORMATION lpProcessInformation) = CreateProcessA;
+
+static BOOL (WINAPI* NativeShellExecuteExW)(_Inout_ SHELLEXECUTEINFOW *pExecInfo) = ShellExecuteExW;
+
 
 
 static KAFFINITY affinity = 0x00000000000000FF;

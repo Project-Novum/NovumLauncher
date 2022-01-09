@@ -162,7 +162,7 @@ public class BootPatching
 
 
         _utils.InjectDllAndResumeThread(hProcess, hThread,
-            $"{Directory.GetCurrentDirectory()}\\AffinityInjector.dll");
+            $"{Directory.GetCurrentDirectory()}\\ApiHooks.dll");
         
         return true;
     }

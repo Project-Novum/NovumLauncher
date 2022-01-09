@@ -7,6 +7,11 @@ namespace DalamudLauncher
     {
         public static void Main(string[] args)
         {
+            /*string result = "";
+            Utils utils = Utils.Instance;
+            byte[] test = utils.FFXIVLoginStringEncode(0x739, "account.square-enix");
+            foreach (byte b in test) result += b.ToString("x2") +" ";
+            Console.WriteLine(result);*/
             string? hostName;
             string? port;
             do
