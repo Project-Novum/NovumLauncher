@@ -111,4 +111,7 @@ public class NativeMethods
     [DllImport("msvcrt.dll", CallingConvention=CallingConvention.Cdecl)]
     public static extern int memcmp(byte[] b1, byte[] b2, long count);
 
+    
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern bool DebugActiveProcessStop(int dwProcessId);
 }

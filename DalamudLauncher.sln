@@ -10,6 +10,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApiHooks", "ApiHooks\ApiHooks.vcxproj", "{78AF24A6-99CE-4CEB-B198-7EC0530FC980}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalamudLauncherUI", "DalamudLauncherUI\DalamudLauncherUI.csproj", "{BA4F399F-7408-47BE-B69F-FA1D9955E26F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6073EB93-3A24-476A-B7F5-87ACF169E9B9} = {6073EB93-3A24-476A-B7F5-87ACF169E9B9}
+		{78AF24A6-99CE-4CEB-B198-7EC0530FC980} = {78AF24A6-99CE-4CEB-B198-7EC0530FC980}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,9 +33,9 @@ Global
 		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Debug|x86.Build.0 = Debug|Win32
 		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Release|x86.ActiveCfg = Release|Win32
 		{78AF24A6-99CE-4CEB-B198-7EC0530FC980}.Release|x86.Build.0 = Release|Win32
-		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.Build.0 = Debug|Any CPU
-		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.ActiveCfg = Release|Any CPU
-		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.Build.0 = Release|Any CPU
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.ActiveCfg = Debug|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Debug|x86.Build.0 = Debug|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.ActiveCfg = Release|x86
+		{BA4F399F-7408-47BE-B69F-FA1D9955E26F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

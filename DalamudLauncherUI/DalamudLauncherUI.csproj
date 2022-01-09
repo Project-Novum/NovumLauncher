@@ -5,6 +5,11 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <Configurations>Debug;Release</Configurations>
+        <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+        <Platforms>x86</Platforms>
+        <PlatformTarget>x86</PlatformTarget>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,8 +19,20 @@
       </Content>
       <None Remove="imgs\banner_resized.png" />
       <Content Include="imgs\banner_resized.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Update="ServerList.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+    
 </Project>

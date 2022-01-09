@@ -1,0 +1,18 @@
+{
+  "ServerList":[
+    {
+      "ServerName":"local",
+      "PatchServerAddress":"localhost",
+      "PatchServerPort":"54996",
+      "LoginServerAddress":"http://localhost:8081",
+      "LobbyServerAddress":"localhost"
+    },
+    {
+      "ServerName":"Helba",
+      "PatchServerAddress":"v.helba.ai",
+      "PatchServerPort":"80",
+      "LoginServerAddress":"http://a.helba.ai:8081",
+      "LobbyServerAddress":"l.helba.ai"
+    }
+  ]
+}

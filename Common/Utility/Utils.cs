@@ -4,12 +4,14 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using Common.Models;
 using Common.StructLayout;
 using Common.Wrappers;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using static Common.NativeMethods;
 
-namespace DalamudLauncher;
+namespace Common.Utility;
 
 public sealed class Utils
 {
@@ -67,17 +69,8 @@ public sealed class Utils
         MemoryAccessWrapper.VirtualProtectEx(hProcess, address, new UIntPtr((uint)patchSize), lpflOldProtect,
             out lpflOldProtect);
     }
-
-    public byte[] WriteToMemoryStream(int offset,byte[] patchBytes, int patchSize,byte[] data)
-    {
-        using (MemoryStream ms = new MemoryStream(data))
-        {
-            ms.Write(patchBytes,offset,patchSize);
-            return data;
-        }
-    }
-
-
+    
+    
     public void InjectDllAndResumeThread(IntPtr hProcess, IntPtr hThread, string dllName)
     {
         IntPtr moduleHandle = GetModuleHandle("kernel32.dll");
@@ -144,7 +137,19 @@ public sealed class Utils
     }
 
 
+    public ServerInfoModel GetSelectedServer()
+    {
+        ServerInfoModel serverInfoModel = JsonConvert.DeserializeObject<ServerInfoModel>(
+            File.ReadAllText($"{GameInstallLocation()}\\SelectedServer.json"));
 
+        return serverInfoModel;
+    }
+
+    /// <summary>
+    /// Source: https://bitbucket.org/Ioncannon/project-meteor-server/raw/4762811347383c2ef6a013eca643e27176f1c22d/Launcher%20Editor/Program.cs
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public string FFXIVLoginStringDecode(byte[] data)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -186,6 +191,12 @@ public sealed class Utils
         }
     }
     
+    /// <summary>
+    /// Source : https://bitbucket.org/Ioncannon/project-meteor-server/raw/4762811347383c2ef6a013eca643e27176f1c22d/Launcher%20Editor/Program.cs
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="text"></param>
+    /// <returns></returns>
     public byte[] FFXIVLoginStringEncode(uint key, string text)
     {
         key = key & 0xFFFF;

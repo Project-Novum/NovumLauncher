@@ -4,7 +4,6 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RuntimeIdentifier>win-x86</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <RuntimeIdentifier>win-x86</RuntimeIdentifier>
         <Configurations>Debug;Release</Configurations>
@@ -13,6 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="System.Runtime" Version="4.3.1" />
     </ItemGroup>
 

@@ -1,116 +1,115 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography;
 using System.Text;
 using Common;
+using Common.Models;
 using Common.StructLayout;
+using Common.Utility;
 using Common.Wrappers;
-using DalamudLauncher.Enums;
-using DalamudLauncher.offsets;
+using DalamudLauncherUI.Offsets;
 
-namespace DalamudLauncher;
+namespace DalamudLauncherUI.Patching;
 
 public class BootPatching
 {
-    private readonly string _hostName;
-    private readonly string _port;
+    private readonly ServerInfoModel _serverInfoModel;
     private readonly Utils _utils;
 
-    public BootPatching(string hostName, string port)
+    public BootPatching(ServerInfoModel serverInfoModel)
     {
-        _hostName = hostName;
-        _port = port;
+        _serverInfoModel = serverInfoModel;
         _utils = Utils.Instance;
     }
 
-    public void LaunchBoot()
+    public bool LaunchBoot()
     {
         string workingDirectory = _utils.GameInstallLocation();
         string bootPath = $"{workingDirectory}\\ffxivboot.exe";
 
-        PatchingMethod patchingMethod = GetPatchingMethod(bootPath,workingDirectory);
 
-
-        bool patchingStatus;
-        if (patchingMethod == PatchingMethod.BinaryPatching)
-        {
-            patchingStatus = ApplyPatchesToBinary(bootPath,workingDirectory, _hostName.Trim(), _port);
-        }
-        else
-        {
-            CreateProcessWrapper createProcessWrapper = new(bootPath);
-            patchingStatus = ApplyPatchesToMemory(createProcessWrapper.PInfo.hProcess,
-                createProcessWrapper.PInfo.hThread, _hostName.Trim(), _port);
-        }
+        string latestBootVersion = GetLatestBootVersionString(workingDirectory, _serverInfoModel.PatchServerAddress, _serverInfoModel.PatchServerPort);
+        File.WriteAllText($"{workingDirectory}\\boot.ver", latestBootVersion);
         
-        if (!patchingStatus)
+        CreateProcessWrapper createProcessWrapper = new(bootPath);
+
+
+        if (!ApplyPatchesToMemory(createProcessWrapper.PInfo.hProcess,
+                createProcessWrapper.PInfo.hThread, _serverInfoModel.PatchServerAddress, _serverInfoModel.PatchServerPort))
         {
             throw new Exception("Error while patching");
         }
+
+        return true;
     }
 
-    private  bool ApplyPatchesToBinary(string bootPath,string workingDirectory,string patchServerAddress,
+    private bool ApplyPatchesToBinary(string bootPath, string workingDirectory, string patchServerAddress,
         string patchServerPort)
     {
-        
         //Make Backup of current ffxivboot.exe
         Directory.CreateDirectory($"{workingDirectory}\\backup");
-        File.Copy(bootPath,$"{workingDirectory}\\backup\\ffxivboot.exe",true);
-        
-        
+        File.Copy(bootPath, $"{workingDirectory}\\backup\\ffxivboot.exe", true);
+
+
         byte[] patchServerBytes = Encoding.Default.GetBytes(patchServerAddress + char.MinValue);
         byte[] patchPortBytes = Encoding.Default.GetBytes(patchServerPort + char.MinValue);
-        byte[] patchServerWithPort = Encoding.Default.GetBytes($"{patchServerAddress}:{patchServerPort}"+ char.MinValue);
+        byte[] patchServerWithPort =
+            Encoding.Default.GetBytes($"{patchServerAddress}:{patchServerPort}" + char.MinValue);
 
         IBootOffSet bootOffSet = new BootInstalledVersionOffset();
         byte[] bootData = File.ReadAllBytes(bootPath);
-        
-        using MemoryStream memoryStream = new MemoryStream(bootData);
-       // using MemoryStream modifiedMemoryStream = new MemoryStream();
-       
 
-       memoryStream.Seek(bootOffSet.GetRsaFunctionOffSet(), SeekOrigin.Begin);
-       memoryStream.Write(Constants.RsaFunctionPatch,0,Constants.RsaFunctionPatch.Length);
-        
-       memoryStream.Seek(bootOffSet.GetRsaPatternOffset(), SeekOrigin.Begin);
-       memoryStream.Write(Constants.RsaPatternPatch,0,Constants.RsaPatternPatch.Length);
-        
-       memoryStream.Seek(bootOffSet.GetLobbyOffset(), SeekOrigin.Begin);
-       memoryStream.Write(patchServerBytes,0,patchServerBytes.Length);
-       
-        
-       memoryStream.Seek(bootOffSet.GetHostNameOffset(), SeekOrigin.Begin);
-       memoryStream.Write(patchServerBytes,0,patchServerBytes.Length);
-       
-        
-       memoryStream.Seek(bootOffSet.GetHostNamePortOffset(), SeekOrigin.Begin);
-       memoryStream.Write(patchPortBytes,0,patchPortBytes.Length);
-       
-        
-       memoryStream.Seek(bootOffSet.GetSecureSquareEnixOffset(), SeekOrigin.Begin);
-       memoryStream.Write(patchServerWithPort,0,patchServerWithPort.Length);
-       
-        
-        File.WriteAllBytes(bootPath,bootData);
+        using MemoryStream memoryStream = new MemoryStream(bootData);
+        // using MemoryStream modifiedMemoryStream = new MemoryStream();
+
+
+        memoryStream.Seek(bootOffSet.GetRsaFunctionOffSet(), SeekOrigin.Begin);
+        memoryStream.Write(Constants.RsaFunctionPatch, 0, Constants.RsaFunctionPatch.Length);
+
+        memoryStream.Seek(bootOffSet.GetRsaPatternOffset(), SeekOrigin.Begin);
+        memoryStream.Write(Constants.RsaPatternPatch, 0, Constants.RsaPatternPatch.Length);
+
+        memoryStream.Seek(bootOffSet.GetLobbyOffset(), SeekOrigin.Begin);
+        memoryStream.Write(patchServerBytes, 0, patchServerBytes.Length);
+
+
+        memoryStream.Seek(bootOffSet.GetHostNameOffset(), SeekOrigin.Begin);
+        memoryStream.Write(patchServerBytes, 0, patchServerBytes.Length);
+
+
+        memoryStream.Seek(bootOffSet.GetHostNamePortOffset(), SeekOrigin.Begin);
+        memoryStream.Write(patchPortBytes, 0, patchPortBytes.Length);
+
+
+        memoryStream.Seek(bootOffSet.GetSecureSquareEnixOffset(), SeekOrigin.Begin);
+        memoryStream.Write(patchServerWithPort, 0, patchServerWithPort.Length);
+
+
+        File.WriteAllBytes(bootPath, bootData);
 
         string latestBootVersion = GetLatestBootVersionString(workingDirectory, patchServerAddress, patchServerPort);
-        File.WriteAllText($"{workingDirectory}\\boot.ver",latestBootVersion);
-        
-        
+        File.WriteAllText($"{workingDirectory}\\boot.ver", latestBootVersion);
+
+
         CreateProcessWrapper createProcessWrapper = new(bootPath);
         NativeMethods.ResumeThread(createProcessWrapper.PInfo.hThread);
         NativeMethods.CloseHandle(createProcessWrapper.PInfo.hProcess);
         NativeMethods.CloseHandle(createProcessWrapper.PInfo.hThread);
-        
+
         return true;
     }
 
-    private bool ApplyPatchesToMemory(IntPtr hProcess, IntPtr hThread, string patchServerAddress,string patchServerPort)
+    private bool ApplyPatchesToMemory(IntPtr hProcess, IntPtr hThread, string patchServerAddress,
+        string patchServerPort)
     {
         byte[] patchServerBytes = Encoding.Default.GetBytes(patchServerAddress);
         byte[] patchPortBytes = Encoding.Default.GetBytes(patchServerPort);
         byte[] patchServerWithPort = Encoding.Default.GetBytes($"{patchServerAddress}:{patchServerPort}");
+
         CONTEXT threadContext = new()
         {
             ContextFlags = (uint)CONTEXT_FLAGS.CONTEXT_FULL
@@ -129,7 +128,7 @@ public class BootPatching
         MemoryAccessWrapper.ReadProcessMemory(hProcess, imageBaseAddressPtr, out IntPtr imageBaseAddress, 4,
             out IntPtr _);
 
-        
+
         if (IsBootUpdatedVersion(hProcess, imageBaseAddress))
         {
             bootOffSet = new BootUpdatedVersionOffset();
@@ -139,31 +138,34 @@ public class BootPatching
             bootOffSet = new BootInstalledVersionOffset();
         }
 
-        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetRsaFunctionOffSet()), Constants.RsaFunctionPatch,
+        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetRsaFunctionOffSet()),
+            Constants.RsaFunctionPatch,
             Constants.RsaFunctionPatch.Length);
 
-        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetRsaPatternOffset()), Constants.RsaPatternPatch,
+        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetRsaPatternOffset()),
+            Constants.RsaPatternPatch,
             Constants.RsaPatternPatch.Length);
-        
+
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetLobbyOffset()), patchServerBytes,
             patchServerBytes.Length + 1);
 
-        
+
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetHostNameOffset()), patchServerBytes,
             patchServerBytes.Length + 1);
-        
-        
+
+
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetHostNamePortOffset()), patchPortBytes,
             patchPortBytes.Length + 1);
-        
-        
-        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetSecureSquareEnixOffset()), patchServerWithPort,
+
+
+        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetSecureSquareEnixOffset()),
+            patchServerWithPort,
             patchServerWithPort.Length + 1);
 
+        NativeMethods.ResumeThread(hThread);
+        NativeMethods.CloseHandle(hProcess);
+        NativeMethods.CloseHandle(hThread);
 
-        _utils.InjectDllAndResumeThread(hProcess, hThread,
-            $"{Directory.GetCurrentDirectory()}\\ApiHooks.dll");
-        
         return true;
     }
 
@@ -179,21 +181,21 @@ public class BootPatching
         {
             return true;
         }
-        
+
         // check if it's not the patched binary one 
         if (buffer.Length == Constants.RsaPatternPatch.Length &&
             NativeMethods.memcmp(buffer, Constants.OriginalRsaSign, buffer.Length) == 0)
         {
             return true;
         }
-        
+
         return false;
     }
 
-    private PatchingMethod GetPatchingMethod(string bootPath,string workingDirectory)
+    /*private void GetPatchingMethod(string bootPath, string workingDirectory)
     {
         string sha1Value = _utils.GetSha1Hash(bootPath);
-        
+
 
         if (string.Equals(sha1Value, Constants.BootSha1InstallVersion, StringComparison.OrdinalIgnoreCase))
         {
@@ -210,13 +212,12 @@ public class BootPatching
                 {
                     throw new Exception(
                         $"The Backup ffxivboot.exe does not exist {workingDirectory}\\backup\\ffxivboot.exe \n Reinstalling the game might be required");
-
                 }
-                
+
                 sha1Value = _utils.GetSha1Hash($"{workingDirectory}\\backup\\ffxivboot.exe");
                 if (string.Equals(sha1Value, Constants.BootSha1InstallVersion, StringComparison.OrdinalIgnoreCase))
                 {
-                    File.Copy($"{workingDirectory}\\backup\\ffxivboot.exe",$"{workingDirectory}\\ffxivboot.exe",true);
+                    File.Copy($"{workingDirectory}\\backup\\ffxivboot.exe", $"{workingDirectory}\\ffxivboot.exe", true);
                     return PatchingMethod.BinaryPatching;
                 }
                 else
@@ -228,21 +229,18 @@ public class BootPatching
         }
 
         return PatchingMethod.MemoryPatching;
-
-
-    }
+    }*/
 
     private string GetLatestBootVersionString(string workingDirectory, string hostAddress, string hostPort)
     {
-        
         string bootVer = File.ReadAllText($"{workingDirectory}\\boot.ver");
         string url = $"http://{hostAddress}:{hostPort}/patch/vercheck/ffxiv/win32/release/boot/{bootVer.Trim()}";
-        
+
         try
         {
             using HttpClient client = new();
             HttpResponseMessage httpResponseMessage = client.GetAsync(url).Result;
-        
+
             httpResponseMessage.Headers.TryGetValues("X-Latest-Version", out IEnumerable<string>? latesetVersion);
 
             if (latesetVersion != null) return latesetVersion.First();
@@ -252,7 +250,7 @@ public class BootPatching
             Console.WriteLine(e);
             throw;
         }
-        
+
         return "2010.09.18.0000";
     }
 }

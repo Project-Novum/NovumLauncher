@@ -1,64 +1,34 @@
-﻿
-using System.Net;
+﻿using Common.Models;
+using Common.Utility;
+using DalamudLauncher.Patching;
+using Newtonsoft.Json;
+
 
 namespace DalamudLauncher
 {
     public static class Program
     {
+        
         public static void Main(string[] args)
         {
-            /*string result = "";
-            Utils utils = Utils.Instance;
-            byte[] test = utils.FFXIVLoginStringEncode(0x739, "account.square-enix");
-            foreach (byte b in test) result += b.ToString("x2") +" ";
-            Console.WriteLine(result);*/
-            string? hostName;
-            string? port;
-            do
+            if (args.Length > 0)
             {
-                Console.WriteLine("Please Enter the hostname of the Patch Server (Without the port)");
-                hostName = Console.ReadLine();
+                ServerInfoModel serverInfoModel = Utils.Instance.GetSelectedServer();
                 
-                if (hostName != null)
+                if (args[0].Contains("ffxivlogin"))
                 {
-                    if (Uri.CheckHostName(hostName) == UriHostNameType.Unknown)
-                    {
-                        Console.WriteLine("Invalid Host Name");
-                        continue;
-                    }
-                }
-                else
+                    LoginPatching loginPatching = new (args,serverInfoModel);
+                    loginPatching.ApplyPatches();
+                }else if (args[0].Contains("ffxivgame"))
                 {
-                    Console.WriteLine("The Host Name Value is Empty");
-                    continue;
+                    GamePatching gamePatching = new (args, serverInfoModel);
+                    gamePatching.LaunchGame();
                 }
-                
-                Console.WriteLine("Please Enter the Port for the hostname");
-                port = Console.ReadLine();
-                
-                if (port != null)
-                {
-                    int valid = int.Parse(port);
-
-                    if (valid <= 0)
-                    {
-                        Console.WriteLine("Invalid Port Number");
-                        continue;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("The Port Number Value is Empty");
-                    continue;
-                }
-
-                break;
-                
-            } while (true);
-            
-            
-            BootPatching bootPatching = new(hostName!,port!);
-            bootPatching.LaunchBoot();
+            }
+            else
+            {
+                Console.WriteLine("Please run the UI app");
+            }
         }
         
     }
