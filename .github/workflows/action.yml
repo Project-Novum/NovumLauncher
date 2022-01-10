@@ -1,0 +1,75 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest  # For a list of available runner types, refer to
+    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: NovumLauncher.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Publish_Path: ${{github.workspace}}\Publish_git
+      
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.2
+      
+      # Execute all unit tests in the solution
+      #- name: Execute unit tests
+      #  run: dotnet test
+      
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+      
+      - name: Build ApiHooks
+        run: msbuild Apihooks/Apihooks.vcxproj /p:Configuration=$env:Configuration /p:OutDir=$env:Publish_Path
+        env:
+          Configuration: ${{ matrix.configuration }}
+          
+      - name: Build NovumLauncher
+        run: dotnet publish NovumLauncher\NovumLauncher.csproj -r win-x86 -p:PublishSingleFile=true /p:DebugType=None --self-contained true -c $env:Configuration -o $env:Publish_Path
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      - name: Build NovumLauncherUI
+        run: dotnet publish NovumLauncherUI\NovumLauncherUI.csproj -r win-x86 -p:PublishSingleFile=true /p:DebugType=None --self-contained true -c $env:Configuration -o $env:Publish_Path
+        env:
+            Configuration: ${{ matrix.configuration }}
+            
+      - uses: papeloto/action-zip@v1
+        with:
+          files: Publish_git
+          recursive: true
+          dest: result.zip
+          
+      - uses: actions/upload-artifact@v1
+        with:
+          name: my-artifact
+          path: ${{ github.workspace }}/result.zip
