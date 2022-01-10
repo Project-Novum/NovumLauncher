@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:NovumLauncherUI.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="Dalamud Launcher" Height="342" Width="754" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Title="Novum Launcher" Height="342" Width="754" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
         AllowsTransparency="True" WindowStyle="None"
         Background="{x:Null}" Foreground="{x:Null}" MouseDown="MainWindow_OnMouseDown">
-
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
     <FrameworkElement.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="ProgressBarControlTemplate1" TargetType="{x:Type ProgressBar}">
@@ -131,14 +133,14 @@
                     </LinearGradientBrush>
                 </ProgressBar.Foreground>
             </ProgressBar>
-            <Button x:Name="lbl_progressBar" Content="Button" Canvas.Left="406" Canvas.Top="194"  BorderBrush="{x:Null}" Foreground="White" Height="42" Width="285" Background="Black"/>
+            <Button x:Name="lbl_progressBar" Content="Launch" Canvas.Left="406" Canvas.Top="194"  BorderBrush="{x:Null}" Foreground="White" Height="42" Width="285" Background="Black" Command="{Binding PatchBootCommand}"/>
             <Button x:Name="btnMinimize" Content="-" Canvas.Left="612" Height="34" Width="50" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" Canvas.Top="59" FontSize="25" Click="Btn_Minimize_Click"/>
             <Button x:Name="btnClose1" Content="X" Canvas.Left="654" Height="32" Width="48" Foreground="Black" BorderBrush="{x:Null}" Background="{x:Null}" Canvas.Top="61" FontSize="20" Click="BtnClose_Click" RenderTransformOrigin="0.465,0.155"/>
             <Label x:Name="gamelabeltext" Content="Novum Launcher" Canvas.Left="44" Canvas.Top="61" Foreground="Black" FontSize="15"/>
             <Label Content="Launcher Version" Canvas.Left="239" Canvas.Top="226" Foreground="Black" Background="{x:Null}"/>
-            <ComboBox Canvas.Left="38" Canvas.Top="226" Width="173" SelectedIndex="0">
-                <ComboBoxItem Content="Local"/>
-            </ComboBox>
+            <ComboBox Canvas.Left="38" Canvas.Top="226" Width="173" SelectedIndex="0" ItemsSource="{Binding ServerList}"
+                      SelectedItem="{Binding SelectedServer}"
+                      DisplayMemberPath="ServerName"/>
             <Label Content="Server" Canvas.Left="38" Canvas.Top="198"/>
         </Canvas>
     </Grid>
