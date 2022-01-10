@@ -118,7 +118,7 @@
     </FrameworkElement.Resources>
     <Grid>
         <Canvas Margin="0,0,10,0">
-            <Image Height="234" Source="/MVVM/View/roundrect.png" Canvas.Left="14" Canvas.Top="45" Panel.ZIndex="-1" Stretch="Fill" StretchDirection="Both" Width="700" />
+            <Image Height="234" Source="/MVVM/View/roundrect.png" Canvas.Left="14" Canvas.Top="45" Panel.ZIndex="-1" Stretch="Fill" StretchDirection="Both" Width="700" Loaded="Image_Loaded" />
             <Label Name="versionLabel" Content="Currently installed:" Canvas.Left="239" Canvas.Top="194" Width="162" Height="32" FontWeight="Normal" Foreground="Black" Background="{x:Null}" />
             <Label x:Name="lbl_installedVersion" Canvas.Left="341" Canvas.Top="226" FontWeight="Bold" Width="60" Height="26" Foreground="Black" Background="{x:Null}" />
             <DockPanel />

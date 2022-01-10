@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using Common.Utility;
+using Microsoft.Win32;
 
 namespace NovumLauncherUI.MVVM.View
 {
@@ -30,6 +33,32 @@ namespace NovumLauncherUI.MVVM.View
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Image_Loaded(object sender, RoutedEventArgs e)
+        {
+            string fullRegLocationPath = "";
+
+            if (Environment.Is64BitOperatingSystem)
+            {
+                fullRegLocationPath = $"HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\{Constants.RegLocation}";
+            }
+            else
+            {
+                fullRegLocationPath = $"HKEY_LOCAL_MACHINE\\SOFTWARE\\{Constants.RegLocation}";
+            }
+
+            string? installLocation = Registry.GetValue(fullRegLocationPath, "InstallLocation", null) as string;
+            string? displayName = Registry.GetValue(fullRegLocationPath, "DisplayName", null) as string;
+
+            if (installLocation == null || displayName == null)
+            {
+                versionLabel.Content = "Currently installed: False";
+            }
+            else
+            {
+                versionLabel.Content = "Currently installed: True";
+            }
         }
     }
 }

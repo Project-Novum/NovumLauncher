@@ -25,7 +25,7 @@ public class MainWindowViewModel : ObservableObject
     {
         _utils = Utils.Instance;
         PatchBootCommand = new RelayCommand(PatchBootTask);
-        
+
         if (!File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}ServerList.json"))
         {
             string tempJson = @"
@@ -69,12 +69,12 @@ public class MainWindowViewModel : ObservableObject
 
         string gameDir = _utils.GameInstallLocation();
 
-        File.WriteAllText($"{gameDir}\\SelectedServer.json",JsonConvert.SerializeObject(_selectedServer));
-        File.Copy($"{Directory.GetCurrentDirectory()}\\ApiHooks.dll",$"{gameDir}\\ApiHooks.dll",true);
+        File.WriteAllText($"{gameDir}\\SelectedServer.json", JsonConvert.SerializeObject(_selectedServer));
+        File.Copy($"{Directory.GetCurrentDirectory()}\\ApiHooks.dll", $"{gameDir}\\ApiHooks.dll", true);
         string exePath = $"{Directory.GetCurrentDirectory()}\\NovumLauncher.exe";
-        Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivlogin.exe","debugger",exePath);
-        Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivgame.exe","debugger",exePath);
-        BootPatching bootPatching = new (_selectedServer);
+        Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivlogin.exe", "debugger", exePath);
+        Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivgame.exe", "debugger", exePath);
+        BootPatching bootPatching = new(_selectedServer);
         if (bootPatching.LaunchBoot())
         {
             App.Current.Shutdown();

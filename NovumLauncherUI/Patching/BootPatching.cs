@@ -31,12 +31,10 @@ public class BootPatching
         string workingDirectory = _utils.GameInstallLocation();
         string bootPath = $"{workingDirectory}\\ffxivboot.exe";
 
-
         string latestBootVersion = GetLatestBootVersionString(workingDirectory, _serverInfoModel.PatchServerAddress, _serverInfoModel.PatchServerPort);
         File.WriteAllText($"{workingDirectory}\\boot.ver", latestBootVersion);
-        
-        CreateProcessWrapper createProcessWrapper = new(bootPath);
 
+        CreateProcessWrapper createProcessWrapper = new(bootPath);
 
         if (!ApplyPatchesToMemory(createProcessWrapper.PInfo.hProcess,
                 createProcessWrapper.PInfo.hThread, _serverInfoModel.PatchServerAddress, _serverInfoModel.PatchServerPort))
@@ -54,7 +52,6 @@ public class BootPatching
         Directory.CreateDirectory($"{workingDirectory}\\backup");
         File.Copy(bootPath, $"{workingDirectory}\\backup\\ffxivboot.exe", true);
 
-
         byte[] patchServerBytes = Encoding.Default.GetBytes(patchServerAddress + char.MinValue);
         byte[] patchPortBytes = Encoding.Default.GetBytes(patchServerPort + char.MinValue);
         byte[] patchServerWithPort =
@@ -66,7 +63,6 @@ public class BootPatching
         using MemoryStream memoryStream = new MemoryStream(bootData);
         // using MemoryStream modifiedMemoryStream = new MemoryStream();
 
-
         memoryStream.Seek(bootOffSet.GetRsaFunctionOffSet(), SeekOrigin.Begin);
         memoryStream.Write(Constants.RsaFunctionPatch, 0, Constants.RsaFunctionPatch.Length);
 
@@ -76,24 +72,19 @@ public class BootPatching
         memoryStream.Seek(bootOffSet.GetLobbyOffset(), SeekOrigin.Begin);
         memoryStream.Write(patchServerBytes, 0, patchServerBytes.Length);
 
-
         memoryStream.Seek(bootOffSet.GetHostNameOffset(), SeekOrigin.Begin);
         memoryStream.Write(patchServerBytes, 0, patchServerBytes.Length);
-
 
         memoryStream.Seek(bootOffSet.GetHostNamePortOffset(), SeekOrigin.Begin);
         memoryStream.Write(patchPortBytes, 0, patchPortBytes.Length);
 
-
         memoryStream.Seek(bootOffSet.GetSecureSquareEnixOffset(), SeekOrigin.Begin);
         memoryStream.Write(patchServerWithPort, 0, patchServerWithPort.Length);
-
 
         File.WriteAllBytes(bootPath, bootData);
 
         string latestBootVersion = GetLatestBootVersionString(workingDirectory, patchServerAddress, patchServerPort);
         File.WriteAllText($"{workingDirectory}\\boot.ver", latestBootVersion);
-
 
         CreateProcessWrapper createProcessWrapper = new(bootPath);
         NativeMethods.ResumeThread(createProcessWrapper.PInfo.hThread);
@@ -117,7 +108,6 @@ public class BootPatching
 
         IBootOffSet bootOffSet;
 
-
         if (!NativeMethods.GetThreadContext(hThread, ref threadContext))
         {
             throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -127,7 +117,6 @@ public class BootPatching
 
         MemoryAccessWrapper.ReadProcessMemory(hProcess, imageBaseAddressPtr, out IntPtr imageBaseAddress, 4,
             out IntPtr _);
-
 
         if (IsBootUpdatedVersion(hProcess, imageBaseAddress))
         {
@@ -149,14 +138,11 @@ public class BootPatching
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetLobbyOffset()), patchServerBytes,
             patchServerBytes.Length + 1);
 
-
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetHostNameOffset()), patchServerBytes,
             patchServerBytes.Length + 1);
 
-
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetHostNamePortOffset()), patchPortBytes,
             patchPortBytes.Length + 1);
-
 
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetSecureSquareEnixOffset()),
             patchServerWithPort,
@@ -195,7 +181,6 @@ public class BootPatching
     /*private void GetPatchingMethod(string bootPath, string workingDirectory)
     {
         string sha1Value = _utils.GetSha1Hash(bootPath);
-
 
         if (string.Equals(sha1Value, Constants.BootSha1InstallVersion, StringComparison.OrdinalIgnoreCase))
         {
