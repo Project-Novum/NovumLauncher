@@ -5,47 +5,141 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:NovumLauncherUI.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="Dalamud Launcher" Height="240" Width="500"
-        WindowStyle="SingleBorderWindow"
-        ResizeMode="NoResize">
-    
-    <Window.DataContext>
-        <viewModel:MainWindowViewModel/>
-    </Window.DataContext>
-    
+        Title="Dalamud Launcher" Height="342" Width="754" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True" WindowStyle="None"
+        Background="{x:Null}" Foreground="{x:Null}" MouseDown="MainWindow_OnMouseDown">
+
+    <FrameworkElement.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="ProgressBarControlTemplate1" TargetType="{x:Type ProgressBar}">
+                <Grid Name="TemplateRoot">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Determinate" />
+                            <VisualState x:Name="Indeterminate">
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="Animation">
+                                        <EasingDoubleKeyFrame KeyTime="0" Value="0.25" />
+                                        <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.25" />
+                                        <EasingDoubleKeyFrame KeyTime="0:0:2" Value="0.25" />
+                                    </DoubleAnimationUsingKeyFrames>
+                                    <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="Animation">
+                                        <EasingPointKeyFrame KeyTime="0" Value="-0.5,0.5" />
+                                        <EasingPointKeyFrame KeyTime="0:0:1" Value="0.5,0.5" />
+                                        <EasingPointKeyFrame KeyTime="0:0:2" Value="1.5,0.5" />
+                                    </PointAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" />
+                    <Rectangle Name="PART_Track" />
+                    <Grid Name="PART_Indicator" ClipToBounds="True" HorizontalAlignment="Left">
+                        <Rectangle Name="Indicator" Fill="{TemplateBinding Foreground}" />
+                        <Rectangle Name="Animation" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                            <UIElement.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform />
+                                    <TranslateTransform />
+                                </TransformGroup>
+                            </UIElement.RenderTransform>
+                        </Rectangle>
+                    </Grid>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ProgressBar.Orientation" Value="Vertical">
+                        <Setter TargetName="TemplateRoot" Property="FrameworkElement.LayoutTransform">
+                            <Setter.Value>
+                                <RotateTransform Angle="-90" />
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                    <Trigger Property="ProgressBar.IsIndeterminate" Value="True">
+                        <Setter TargetName="Indicator" Property="UIElement.Visibility" Value="Collapsed" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource SystemColors.ControlTextBrushKey}" StrokeThickness="1" StrokeDashArray="1 2" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD" />
+            <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070" />
+            <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD" />
+            <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1" />
+            <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
+            <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
+            <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4" />
+            <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
+            <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
+            <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+                <Setter Property="FrameworkElement.FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+                <Setter Property="Background" Value="{StaticResource Button.Static.Background}" />
+                <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}" />
+                <Setter Property="Foreground" Value="{DynamicResource SystemColors.ControlTextBrushKey}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Padding" Value="1" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                <ContentPresenter Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsDefaulted" Value="True">
+                                    <Setter TargetName="border" Value="{DynamicResource SystemColors.HighlightBrushKey}" Property="Border.BorderBrush" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Border.Background" Value="{StaticResource Button.Pressed.Background}" />
+                                    <Setter TargetName="border" Property="Border.BorderBrush" Value="{StaticResource Button.Pressed.Border}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="border" Property="Border.Background" Value="{StaticResource Button.Disabled.Background}" />
+                                    <Setter TargetName="border" Property="Border.BorderBrush" Value="{StaticResource Button.Disabled.Border}" />
+                                    <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{StaticResource Button.Disabled.Foreground}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </FrameworkElement.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="92"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Image Grid.ColumnSpan="2"  Source="imgs/banner_resized.png" />
-
-        <Grid Grid.Column="0" Grid.Row="1" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Label Grid.Column="0" Grid.Row="0" Content="Select a Server" HorizontalAlignment="Center" Margin="0,-10,0,0"/>
-            
-            <ComboBox Grid.Column="0" Grid.Row="1"
-                      ItemsSource="{Binding ServerList}"
-                      SelectedItem="{Binding SelectedServer}"
-                      DisplayMemberPath="ServerName"
-                      />
-                
-            <!--<Button Grid.Row="2" Margin="0,10,0,0">
-                Add a New Server
-            </Button>-->
-        </Grid>
-        
-        <Button Grid.Column="1"  Grid.Row="1" Margin="10" Command="{Binding PatchBootCommand}">
-            Patch Boot &amp; Launch
-        </Button>
+        <Canvas Margin="0,0,10,0">
+            <Image Height="234" Source="/MVVM/View/roundrect.png" Canvas.Left="14" Canvas.Top="45" Panel.ZIndex="-1" Stretch="Fill" StretchDirection="Both" Width="700" />
+            <Label Name="versionLabel" Content="Currently installed:" Canvas.Left="239" Canvas.Top="194" Width="162" Height="32" FontWeight="Normal" Foreground="Black" Background="{x:Null}" />
+            <Label x:Name="lbl_installedVersion" Canvas.Left="341" Canvas.Top="226" FontWeight="Bold" Width="60" Height="26" Foreground="Black" Background="{x:Null}" />
+            <DockPanel />
+            <ProgressBar x:Name="progressBar" Height="38" Canvas.Left="38" Canvas.Top="142" Width="652" Background="White" BorderBrush="#FF0E0001" Orientation="Vertical">
+                <ProgressBar.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFD38D5F"/>
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FFEC7F38" Offset="0"/>
+                        <GradientStop Color="#FFFDA369" Offset="0.987"/>
+                        <GradientStop Color="#FFDC8146" Offset="0.487"/>
+                    </LinearGradientBrush>
+                </ProgressBar.Foreground>
+            </ProgressBar>
+            <Button x:Name="lbl_progressBar" Content="Button" Canvas.Left="406" Canvas.Top="194"  BorderBrush="{x:Null}" Foreground="White" Height="42" Width="285" Background="Black"/>
+            <Button x:Name="btnMinimize" Content="-" Canvas.Left="612" Height="34" Width="50" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" Canvas.Top="59" FontSize="25" Click="Btn_Minimize_Click"/>
+            <Button x:Name="btnClose1" Content="X" Canvas.Left="654" Height="32" Width="48" Foreground="Black" BorderBrush="{x:Null}" Background="{x:Null}" Canvas.Top="61" FontSize="20" Click="BtnClose_Click" RenderTransformOrigin="0.465,0.155"/>
+            <Label x:Name="gamelabeltext" Content="Novum Launcher" Canvas.Left="44" Canvas.Top="61" Foreground="Black" FontSize="15"/>
+            <Label Content="Launcher Version" Canvas.Left="239" Canvas.Top="226" Foreground="Black" Background="{x:Null}"/>
+            <ComboBox Canvas.Left="38" Canvas.Top="226" Width="173" SelectedIndex="0">
+                <ComboBoxItem Content="Local"/>
+            </ComboBox>
+            <Label Content="Server" Canvas.Left="38" Canvas.Top="198"/>
+        </Canvas>
     </Grid>
 </Window>
