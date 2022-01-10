@@ -58,6 +58,7 @@ namespace NovumLauncherUI.MVVM.View
             else
             {
                 versionLabel.Content = "Currently installed: True";
+                progressBar.Value = 100;
             }
         }
     }
