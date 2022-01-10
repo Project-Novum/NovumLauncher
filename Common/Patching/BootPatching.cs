@@ -142,8 +142,8 @@ public class BootPatching
             Constants.RsaPatternPatch,
             Constants.RsaPatternPatch.Length);
 
-        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetLobbyOffset()), patchServerBytes,
-            patchServerBytes.Length + 1);
+        /*_utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetLobbyOffset()), patchServerBytes,
+            patchServerBytes.Length + 1);*/
 
 
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetHostNameOffset()), patchServerBytes,
@@ -154,9 +154,9 @@ public class BootPatching
             patchPortBytes.Length + 1);
 
 
-        _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetSecureSquareEnixOffset()),
+        /*_utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, bootOffSet.GetSecureSquareEnixOffset()),
             patchServerWithPort,
-            patchServerWithPort.Length + 1);
+            patchServerWithPort.Length + 1);*/
 
         NativeMethods.ResumeThread(hThread);
         NativeMethods.CloseHandle(hProcess);
