@@ -60,6 +60,8 @@ namespace NovumLauncherUI.MVVM.View
                 versionLabel.Content = "Currently installed: True";
                 progressBar.Value = 100;
             }
+
+            lbl_installedVersion.Content = "2022.01.10";
         }
     }
 }
