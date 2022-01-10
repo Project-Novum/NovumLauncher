@@ -26,7 +26,7 @@ public class MainWindowViewModel : ObservableObject
     {
         _utils = Utils.Instance;
         PatchBootCommand = new RelayCommand(PatchBootTask);
-        
+
         if (!File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}ServerList.json"))
         {
             string tempJson = @"
