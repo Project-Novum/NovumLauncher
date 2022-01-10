@@ -69,9 +69,9 @@ jobs:
         with:
           files: Publish_git
           recursive: true
-          dest: result.zip
+          dest: NovumLauncher.zip
           
       - uses: actions/upload-artifact@v1
         with:
-          name: my-artifact
-          path: ${{ github.workspace }}/result.zip
+          name: NovumLauncher.zip
+          path: ${{ github.workspace }}/NovumLauncher.zip
