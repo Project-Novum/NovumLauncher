@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <None Remove="imgs\banner.png" />
+      <None Remove="MVVM\View\IMG_2796.png" />
       <None Remove="MVVM\View\roundrect.png" />
       <Content Include="imgs\banner.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -22,6 +23,9 @@
       <Content Include="imgs\banner_resized.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <Resource Include="MVVM\View\IMG_2796.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
       <None Update="ServerList.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
@@ -37,7 +41,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="MVVM\View\roundrect.png" />
+      <Resource Include="MVVM\View\roundrect.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
     
 </Project>
