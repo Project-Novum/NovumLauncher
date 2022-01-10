@@ -62,16 +62,8 @@ jobs:
         run: dotnet publish NovumLauncherUI\NovumLauncherUI.csproj -r win-x86 -p:PublishSingleFile=true /p:DebugType=None --self-contained true -c $env:Configuration -o $env:Publish_Path
         env:
             Configuration: ${{ matrix.configuration }}
-         
-      
-      - name: Zip Files
-        uses: vimtor/action-zip@v1
-        with:
-          files: Publish_git
-          recursive: true
-          dest: NovumLauncher.zip
-          
+             
       - uses: actions/upload-artifact@v1
         with:
           name: NovumLauncher.zip
-          path: ${{ github.workspace }}/NovumLauncher.zip
+          path: ${{ github.workspace }}/Publish_git
