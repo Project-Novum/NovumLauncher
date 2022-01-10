@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
-using Common;
 using Common.Models;
 using Common.StructLayout;
 using Common.Utility;
 using Common.Wrappers;
-using NovumLauncherUI.Offsets;
+using Common.Offsets;
 
-namespace NovumLauncherUI.Patching;
+namespace Common.Patching;
 
 public class BootPatching
 {
@@ -36,6 +30,8 @@ public class BootPatching
         File.WriteAllText($"{workingDirectory}\\boot.ver", latestBootVersion);
         
         CreateProcessWrapper createProcessWrapper = new(bootPath);
+        
+        NativeMethods.DebugActiveProcessStop(createProcessWrapper.PInfo.dwProcessId);
 
 
         if (!ApplyPatchesToMemory(createProcessWrapper.PInfo.hProcess,

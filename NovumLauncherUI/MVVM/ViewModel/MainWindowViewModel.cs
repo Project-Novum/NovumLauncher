@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using Common.Models;
+using Common.Patching;
 using Common.Utility;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NovumLauncherUI.Patching;
 
 namespace NovumLauncherUI.MVVM.ViewModel;
 
@@ -71,13 +72,18 @@ public class MainWindowViewModel : ObservableObject
 
         File.WriteAllText($"{gameDir}\\SelectedServer.json",JsonConvert.SerializeObject(_selectedServer));
         File.Copy($"{Directory.GetCurrentDirectory()}\\ApiHooks.dll",$"{gameDir}\\ApiHooks.dll",true);
+        
         string exePath = $"{Directory.GetCurrentDirectory()}\\NovumLauncher.exe";
+        
+        Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivboot.exe","debugger",exePath);
         Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivlogin.exe","debugger",exePath);
         Registry.SetValue($"{Constants.ImageExecutionOptions}\\ffxivgame.exe","debugger",exePath);
+        
+        
         BootPatching bootPatching = new (_selectedServer);
         if (bootPatching.LaunchBoot())
         {
-            App.Current.Shutdown();
+            Application.Current.Shutdown();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace NovumLauncherUI.Offsets;
+﻿namespace Common.Offsets;
 
 public class BootInstalledVersionOffset : IBootOffSet
 {

@@ -61,8 +61,10 @@ public class GamePatching
             out IntPtr _);
 
 
+        /*
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, Constants.GameTimePatchOffset), Constants.TimePatch,
             Constants.TimePatch.Length);
+            */
 
 
         _utils.WriteToMemory(hProcess, IntPtr.Add(imageBaseAddress, Constants.GameLobbyHostNameOffset), hostnameBytes,

@@ -1,4 +1,5 @@
 ﻿using Common.Models;
+using Common.Patching;
 using NovumLauncher.Patching;
 
 namespace NovumLauncher
@@ -11,8 +12,12 @@ namespace NovumLauncher
             if (args.Length > 0)
             {
                 ServerInfoModel serverInfoModel = Common.Utility.Utils.Instance.GetSelectedServer();
-                
-                if (args[0].Contains("ffxivlogin"))
+
+                if (args[0].Contains("ffxivboot"))
+                {
+                    BootPatching bootPatching = new (serverInfoModel);
+                    bootPatching.LaunchBoot();
+                }else if (args[0].Contains("ffxivlogin"))
                 {
                     LoginPatching loginPatching = new (args,serverInfoModel);
                     loginPatching.ApplyPatches();

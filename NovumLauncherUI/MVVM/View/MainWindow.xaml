@@ -22,7 +22,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image Grid.ColumnSpan="2"  Source="imgs/banner_resized.png" />
+        <Image Grid.ColumnSpan="2"  Source="/imgs/banner_resized.png" />
 
         <Grid Grid.Column="0" Grid.Row="1" Margin="10">
             <Grid.RowDefinitions>

@@ -32,7 +32,7 @@ public class CreateProcessWrapper
         StartupInfo startupInfo = new StartupInfo();
         _pInfo = new ProcessInformation();
         CreateProcessFlags createProcessFlags =
-            CreateProcessFlags.CREATE_SUSPENDED | CreateProcessFlags.NORMAL_PRIORITY_CLASS;
+            CreateProcessFlags.CREATE_SUSPENDED | CreateProcessFlags.NORMAL_PRIORITY_CLASS | CreateProcessFlags.DEBUG_ONLY_THIS_PROCESS;
         
         _isProcessCreated = NativeMethods.CreateProcess(application, null!, null!, null!,
             false, createProcessFlags,
