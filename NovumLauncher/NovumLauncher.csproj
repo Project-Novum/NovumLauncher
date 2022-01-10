@@ -20,12 +20,4 @@
       <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-      <Exec Command="xcopy $(ProjectDir)..\$(ConfigurationName)\ApiHooks.dll  $(ProjectDir)$(OutDir)  /Y /I" />
-    </Target>
-
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy $(ProjectDir)..\$(ConfigurationName)\ApiHooks.dll  $(ProjectDir)$(OutDir)  /Y /I" />
-    </Target>
-
 </Project>
