@@ -2,9 +2,9 @@ name: Build Launcher
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ master ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ master ]
 
 jobs:
 
@@ -14,7 +14,7 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
+    runs-on: windows-2022  # For a list of available runner types, refer to
     # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
@@ -62,8 +62,10 @@ jobs:
         run: dotnet publish NovumLauncherUI\NovumLauncherUI.csproj -r win-x86 -p:PublishSingleFile=true /p:DebugType=None --self-contained true -c $env:Configuration -o $env:Publish_Path
         env:
             Configuration: ${{ matrix.configuration }}
-            
-      - uses: papeloto/action-zip@v1
+         
+      
+      - name: Zip Files
+        uses: vimtor/action-zip@v1
         with:
           files: Publish_git
           recursive: true
